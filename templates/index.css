@@ -1,0 +1,19 @@
+.top-backgroud{
+    background-image: url(bg.webp);
+    background-size: 100% 100%;
+}
+.bg-img{
+    height: 25%;
+    width: 100%;
+}
+.search{
+    height: 250px; 
+    max-width: 900px;
+    min-width: 800px;
+    /* text-align: center; */
+    margin: 0 auto;
+}
+.input{
+    padding: 100px 100px;
+    /* margin: 0 auto; */
+}
