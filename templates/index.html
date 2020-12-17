@@ -30,7 +30,9 @@
             </div>
         </div>
         <div id="info">
+            {% for cards in image_lists%}
             <div class="row">
+                {% for card in cards}
                 <div class="col-md-3">
                     <div class="card mb-3 shadow-sm">
                         <img class="card-img-top" src="../diseasesImage/水稻矮缩病.jpg" width="654" height="200">
@@ -41,40 +43,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="card mb-3 shadow-sm">
-                        <img class="card-img-top" src="../diseasesImage/水稻白背飞虱.jpg" width="654" height="200">
-                        <div class="card-body">
-                            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
-                                additional content. This content is a little bit longer.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card mb-3 shadow-sm">
-                        <img class="card-img-top" src="../diseasesImage/水稻东格鲁病毒病.png" width="654" height="200">
-
-                        <div class="card-body">
-                            <div class="card-text-box">
-                                <p class="card-text">This is a wider card with </p>
-                                <!-- <p class="card-text">This is a wider card with </p> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card mb-3 shadow-sm">
-                        <img class="card-img-top" src="../diseasesImage/水稻东格鲁病毒病.png" width="654" height="200">
-
-                        <div class="card-body">
-                            <div class="card-text-box">
-                                <p class="card-text">This is a wider card with </p>
-                                <!-- <p class="card-text">This is a wider card with </p> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
+            {% endfor %}
         </div>
     </div>
 
