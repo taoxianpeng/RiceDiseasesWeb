@@ -1,19 +1,33 @@
 .top-backgroud{
     background-image: url(bg.webp);
     background-size: 100% 100%;
+
 }
 .bg-img{
-    height: 25%;
+    height: 100%;
     width: 100%;
 }
-.search{
-    height: 250px; 
-    max-width: 900px;
-    min-width: 800px;
+.image-recognition{
+    /* height: 250px;  */
+    /* max-width: 900px;
+    min-width: 800px; */
+    height: 180px;
     /* text-align: center; */
     margin: 0 auto;
 }
 .input{
     padding: 100px 100px;
     /* margin: 0 auto; */
+}
+#info{
+    margin-top: 50px;
+    margin-left: 3%;
+    margin-right: 3%;
+    /* margin: 50px; */
+}
+.card-text-box{
+    height: 120px;
+}
+.card-text-box-centra{
+    margin-top: 50%;
 }
