@@ -1,24 +1,19 @@
-.top-backgroud{
-    background-image: url(bg.webp);
-    background-size: 100% 100%;
-
-}
-.bg-img{
+html,body{
     height: 100%;
-    width: 100%;
 }
-.image-recognition{
-    /* height: 250px;  */
-    /* max-width: 900px;
-    min-width: 800px; */
-    height: 180px;
-    /* text-align: center; */
-    margin: 0 auto;
+body{
+    color: bisque;
+    background-image: url('./static/Background-Image.jpg');
 }
-.input{
-    padding: 100px 100px;
-    /* margin: 0 auto; */
+.search-box{
+    padding-left: 250px;
+    padding-right: 250px;
+    padding-top: 150px;
+    padding-bottom: 50px;
+    
 }
+
+
 #info{
     margin-top: 50px;
     margin-left: 3%;

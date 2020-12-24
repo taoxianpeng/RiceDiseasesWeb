@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        html,body{
+            height: 100%;
+        }
+    </style>
 </head>
-<body>
-    <!-- D:\GitHub\RiceDiseasesWeb\UpFiles\水稻矮缩病.pdf -->
-    <!-- <embed src="./UpFiles/{{name}}.pdf" width="100%" height="900px"> -->
-    <!-- <embed src="..\UpFiles\{{name}}.pdf" width="100%" height="900px"> -->
-    <embed src="../UpFiles/{{name}}.pdf" width="100%" height="900px">
 
+<body>
+
+    <object data="../static/UpFiles/{{name}}.pdf" type="application/pdf" width="100%" height="100%">
+        <p><b>返回内容</b>: 该浏览器不支持PDFs.请点击查看:
+            <a href="../static/UpFiles/{{name}}.pdf">Download PDF</a>.
+        </p>
+    </object>
 </body>
+
 </html>

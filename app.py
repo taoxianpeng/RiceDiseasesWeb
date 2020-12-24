@@ -1,11 +1,11 @@
+from os.path import join
 from typing import List
 from flask import Flask,render_template,redirect,sessions
 from flask import request as flask_request
 import os
 import glob
 import math
-
-import flask
+import urllib.parse
 from flask.helpers import url_for
 from werkzeug.exceptions import MethodNotAllowed
 
@@ -40,8 +40,8 @@ def index():
 
 @app.route('/diseases',methods=['GET'])
 def diseases():
-    print(flask_request.values['name'])
-    return render_template('diseases.html',name = flask_request.values['name'])
+    name = urllib.parse.unquote(flask_request.values.get('name'))
+    return render_template('diseases.html',name = name)
 
 if __name__ == '__main__':
     app.run()
