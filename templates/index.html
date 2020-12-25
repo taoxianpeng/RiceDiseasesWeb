@@ -18,6 +18,7 @@
     <script src="../static/tapmodo-Jcrop-1902fbc/js/jquery.min.js"></script>
     <script src="../static/tapmodo-Jcrop-1902fbc/js/jquery.Jcrop.js"></script>
     <link rel="stylesheet" href="../static/tapmodo-Jcrop-1902fbc/css/jquery.Jcrop.css">
+    <link rel="stylesheet" href="../static/tapmodo-Jcrop-1902fbc/css/jquery.Jcrop.min.css">
     <style>
         html,
         body {
@@ -101,7 +102,7 @@
                                                 <!-- 只接受jpg格式 -->
                                                 <input id="upload-input"
                                                     style="position: absolute; top: 0; bottom: 0; left: 0;right: 0; opacity: 0;"
-                                                    type="file" accept="image/jpg" onchange="showImg(this)"/>
+                                                    type="file" accept="image/jpg" onchange="showImg(this)" />
                                                 <!-- 自定义按钮效果 -->
                                                 <div style="text-align: top">
                                                     <span style="font-size: 12px;">上传文件：</span>
@@ -118,6 +119,8 @@
 
                                             <div>
                                                 <img id="upload-img" src="" alt="" height="100%" width="100%">
+                                                <button type="button" class="btn btn-primary"
+                                                    onclick="cropImg(this)">剪裁</button>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
@@ -182,6 +185,18 @@
                 document.getElementById('upload-img').src = e.target.result
             }
             reader.readAsDataURL(file)
+        }
+        var jcropApi;
+        function cropImg() {
+            $('#upload-img').Jcrop({
+                allowSelect: true,
+                baseClass: 'jcrop'
+            }, function () {
+                jcropApi = this;
+            });
+        }
+        function destroyCropImg(){
+            $('#upload-img').destroyCropImg()
         }
     </script>
 </body>
