@@ -51,6 +51,55 @@
         .card-text-box-centra {
             margin-top: 50%;
         }
+
+        /* #preview-pane {
+            /* padding-left: 30%; */
+        width: 100px;
+        height: 100px;
+        background-color: aquamarine;
+        } */
+
+        /* .preview-container {
+            padding-left: 10%;
+            width: 80px;
+            height: 80px;
+            background-color: blue;
+        } */
+
+
+        /* Apply these styles only when #preview-pane has
+   been placed within the Jcrop widget */
+        .jcrop-holder #preview-pane {
+            display: block;
+            position: absolute;
+            z-index: 2000;
+            top: 10px;
+            right: -280px;
+            padding: 6px;
+            border: 1px rgba(0, 0, 0, .4) solid;
+            background-color: white;
+
+            -webkit-border-radius: 6px;
+            -moz-border-radius: 6px;
+            border-radius: 6px;
+
+            -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+            box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+
+        }
+        .jcrop-holder #perview-pane img{
+            position: absolute;
+        }
+
+        /* The Javascript code will set the aspect ratio of the crop
+   area based on the size of the thumbnail preview,
+   specified here */
+        #preview-pane .preview-container {
+            width: 250px;
+            height: 170px;
+            overflow: hidden;
+        }
     </style>
     <title>Document</title>
 </head>
@@ -86,7 +135,7 @@
                             <!-- Modal -->
                             <div class="modal fade" id="cropModal" tabindex="-1" role="dialog"
                                 aria-labelledby="ecropModalTitle" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="cropModalTitle">上传图片</h5>
@@ -96,7 +145,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <!-- 要将父布局的position设置为relative，父布局将无法包裹input -->
-                                            <div style="position: relative;">
+                                            <div>
                                                 <!--设置input的position为absolute，使其不按文档流排版，并设置其包裹整个布局 -->
                                                 <!-- 设置opactity为0，使input变透明 -->
                                                 <!-- 只接受jpg格式 -->
@@ -116,12 +165,25 @@
                                                     </svg>
                                                 </div>
                                             </div>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-sm-8">
+                                                        <img id='upload-img' class="init-img" src="" alt="" height="300px" width="300px">
+                                                    </div>
+                                                    <div class="col-sm-4">
 
-                                            <div>
-                                                <img id="upload-img" src="" alt="" height="100%" width="100%">
-                                                <button type="button" class="btn btn-primary"
-                                                    onclick="cropImg(this)">剪裁</button>
+                                                        <div id="preview-pane">
+                                                            <div class="preview-container">
+                                                                <img src="" class="jcrop-preview init-img" alt="Preview">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            <button id="crop-button" type="button" class="btn btn-primary"
+                                                onclick="cropImg(this)">剪裁</button>
+                                            <button id="crop-button" type="button" class="btn btn-primary"
+                                                onclick="destroyCropImg(this)">取消剪裁</button>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
@@ -177,27 +239,94 @@
             })
         })
 
+        $('#cropModal').on('hidden.bs.modal', function () {
+            console.log(123)
+        })
+
+        var jcropApi; //Jcrap全局变量
+        var imgX;
+        var imgY;
+        var width;
+        var height;
+
+        function destroyCropImg() {
+            if (jcropApi != null) {
+                jcropApi.destroy()
+            }
+        }
+
         function showImg(input) {
+
             var file = input.files[0];
-            var reader = new FileReader()
+            var reader = new FileReader();
             // 图片读取成功回调函数
             reader.onload = function (e) {
-                document.getElementById('upload-img').src = e.target.result
+                document.getElementsByClassName('init-img')[0].src = e.target.result;
             }
-            reader.readAsDataURL(file)
+            reader.readAsDataURL(file);
+            
         }
-        var jcropApi;
         function cropImg() {
-            $('#upload-img').Jcrop({
-                allowSelect: true,
-                baseClass: 'jcrop'
-            }, function () {
-                jcropApi = this;
+            // var name = $('#')
+            // $('#upload-img').Jcrop({
+            //     allowSelect: true,
+            //     baseClass: 'jcrop'
+            // }, function () {
+            //     jcropApi = this;
+            // });
+
+            jQuery(function ($) {
+
+                // Create variables (in this scope) to hold the API and image size
+                var boundx, boundy,
+
+                    // Grab some information about the preview pane
+                    $preview = $('#preview-pane'),
+                    $pcnt = $('#preview-pane .preview-container'),
+                    $pimg = $('#preview-pane .preview-container img'),
+
+                    xsize = $pcnt.width(),
+                    ysize = $pcnt.height();
+
+                console.log('init', [xsize, ysize]);
+                $('#upload-img').Jcrop({
+                    onChange: updatePreview,
+                    onSelect: updatePreview,
+                    aspectRatio: xsize / ysize
+                }, function () {
+                    // Use the API to get the real image size
+                    var bounds = this.getBounds();
+                    // console.log(bounds[0],bounds[1])
+                    boundx = bounds[0];
+                    boundy = bounds[1];
+                    // Store the API in the jcrop_api variable
+                    jcrop_api = this;
+
+                    // Move the preview into the jcrop container for css positioning
+                    // $preview.appendTo(jcrop_api.ui.holder);
+                });
+
+                function updatePreview(c) {
+                    if (parseInt(c.w) > 0) {
+                        var rx = xsize / c.w;
+                        var ry = ysize / c.h;
+                        console.log('x:'+boundx+' y:'+boundy)
+                        console.log('c.x:'+c.x+' c.y:'+c.y)
+                        $pimg.css({
+                            width: Math.round(rx * boundx) + 'px',
+                            height: Math.round(ry * boundy) + 'px',
+                            marginRight: '-' + Math.round(rx * c.x) + 'px',
+                            marginBottom: '-' + Math.round(ry * c.y) + 'px'
+                        });
+                    }
+                };
+
             });
         }
-        function destroyCropImg(){
-            $('#upload-img').destroyCropImg()
-        }
+
+
+
+
     </script>
 </body>
 
