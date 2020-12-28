@@ -2,13 +2,15 @@ from os.path import join
 from typing import List
 from flask import Flask,render_template,redirect,sessions
 from flask import request as flask_request
-import os
+from io import BytesIO
 import glob
 import math
 import urllib.parse
 from flask.globals import request
 from flask.helpers import url_for
 from werkzeug.exceptions import MethodNotAllowed
+from PIL import Image
+import json
 
 UPLOAD_FOLDER = '/uploads'
 ALLOWED_EXTENSIONS = set(['jpg'])
@@ -48,11 +50,24 @@ def diseases():
     return render_template('diseases.html',name = name)
 @app.route('/recognition', methods = ['GET', 'POST'])
 def recognition():
-    # f = request.form
-    # s = request.form
-    # print(f,s)
-    f = request.files  
-    print(f)
+    
+    image_size_str = request.form.get('size')
+    filestorage = request.files['file']
+    image_bin = filestorage.read()
+
+    image = Image.open(BytesIO(image_bin))
+    image_crop_size_dict = json.loads(image_size_str)
+    x=image_crop_size_dict['x']
+    y=image_crop_size_dict['y']
+    x2=image_crop_size_dict['x2']
+    y2=image_crop_size_dict['y2']
+    g = int(256/466)
+    print(x,y,x2,y2)
+    print(image.size)
+    res_image = image.crop((x,y,x2,y2))
+    res_image.show()
+    # print(request.files['file'])
+    # print(image_size)
 
     return 'success'
     # print(request.values['size'])

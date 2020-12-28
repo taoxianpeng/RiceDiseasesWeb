@@ -226,20 +226,21 @@
             //获取照片实际的大小
             var image = new Image()
             image.src = $("#jcrop-img")[0].src;
+            // var n
             var cropSize = jcropApi.tellSelect()
-
-            var W2 = image.width
-            var H2 = image.height
-            var cropX = cropSize['x']
-            var cropY = cropSize['y']
-            var cropX2 = cropSize['x2']
-            var cropY2 = cropSize['y2']
-
+            var radio = image.height/jcropApi.getBounds()[0]
+            // var narlX = jcropApi.getBounds()[0]
+            // var narlY = jcropApi.getBounds()[1]
+            var cropX = parseInt(cropSize['x']*radio)
+            var cropY = parseInt(cropSize['y']*radio)
+            var cropX2 = parseInt(cropSize['x2']*radio)
+            var cropY2 = parseInt(cropSize['y2']*radio)
+            var cropSizeRadio = {"x":cropX,"y":cropY,"x2":cropX2,"y2":cropY2}
             var formdata = new FormData()
             // formdata.append('file',file);
             // formdata.append('size', JSON.stringify(cropSize));
             formdata.append('file',file)
-            formdata.append('size', JSON.stringify(cropSize))
+            formdata.append('size', JSON.stringify(cropSizeRadio))
             console.log(formdata)
             $.ajax({
                 type:'post',
