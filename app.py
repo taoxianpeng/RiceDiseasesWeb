@@ -6,10 +6,14 @@ import os
 import glob
 import math
 import urllib.parse
+from flask.globals import request
 from flask.helpers import url_for
 from werkzeug.exceptions import MethodNotAllowed
 
+UPLOAD_FOLDER = '/uploads'
+ALLOWED_EXTENSIONS = set(['jpg'])
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def processing_list(list:List,step=4):
     return [list[i*step-step:i*step] for i in range(1,math.ceil(len(list)/step))]
@@ -42,6 +46,15 @@ def index():
 def diseases():
     name = urllib.parse.unquote(flask_request.values.get('name'))
     return render_template('diseases.html',name = name)
+@app.route('/recognition', methods = ['GET', 'POST'])
+def recognition():
+    # f = request.form
+    # s = request.form
+    # print(f,s)
+    f = request.files  
+    print(f)
 
+    return 'success'
+    # print(request.values['size'])
 if __name__ == '__main__':
     app.run()

@@ -61,7 +61,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="输入病害名称" aria-label="输入病害名称"
+                        <input type="text" class="form-control" placeholder="输入--病害名称" aria-label="输入病害名称"
                             aria-describedby="basic-addon2">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary search-button" type="button">
@@ -135,7 +135,8 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary">识别</button>
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="img_crop_to_python(this)">识别</button>
                                         </div>
                                     </div>
                                 </div>
@@ -186,6 +187,7 @@
             })
         })
 
+        var file; //读取的图片
         var jcropApi; //Jcrap全局变量
         var imgX; //需要剪裁区域左上角的x坐标
         var imgY; //需要剪裁区域左上角的y坐标
@@ -200,7 +202,7 @@
 
         function showImg(input) {
 
-            var file = input.files[0]
+            file = input.files[0]
             var reader = new FileReader()
             // 图片读取成功回调函数
             reader.onload = function (e) {
@@ -219,13 +221,37 @@
 
         }
 
-        function getNaturalSize(img){
+        function img_crop_to_python() {
             // var imgX = jcropApi.tellSelect()
             //获取照片实际的大小
             var image = new Image()
-            image.src = img.src
-            
-            var naturalWight = image.width
+            image.src = $("#jcrop-img")[0].src;
+            var cropSize = jcropApi.tellSelect()
+
+            var W2 = image.width
+            var H2 = image.height
+            var cropX = cropSize['x']
+            var cropY = cropSize['y']
+            var cropX2 = cropSize['x2']
+            var cropY2 = cropSize['y2']
+
+            var formdata = new FormData()
+            // formdata.append('file',file);
+            // formdata.append('size', JSON.stringify(cropSize));
+            formdata.append('file',file)
+            formdata.append('size', JSON.stringify(cropSize))
+            console.log(formdata)
+            $.ajax({
+                type:'post',
+                url: './recognition',
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                data: formdata,
+                success:(res)=> {
+                console.log(111,res)
+                }
+            });
         }
 
 
