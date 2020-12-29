@@ -61,15 +61,11 @@ def recognition():
     y=image_crop_size_dict['y']
     x2=image_crop_size_dict['x2']
     y2=image_crop_size_dict['y2']
-    g = int(256/466)
-    print(x,y,x2,y2)
-    print(image.size)
+
     res_image = image.crop((x,y,x2,y2))
     res_image.show()
-    # print(request.files['file'])
-    # print(image_size)
 
     return 'success'
-    # print(request.values['size'])
+
 if __name__ == '__main__':
     app.run()

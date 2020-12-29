@@ -228,20 +228,25 @@
             image.src = $("#jcrop-img")[0].src;
             // var n
             var cropSize = jcropApi.tellSelect()
-            var radio = image.height/jcropApi.getBounds()[0]
-            // var narlX = jcropApi.getBounds()[0]
-            // var narlY = jcropApi.getBounds()[1]
-            var cropX = parseInt(cropSize['x']*radio)
-            var cropY = parseInt(cropSize['y']*radio)
-            var cropX2 = parseInt(cropSize['x2']*radio)
-            var cropY2 = parseInt(cropSize['y2']*radio)
+            var H1 = image.height
+            var W1 = image.width
+            var H2 = jcropApi.getBounds()[1]
+            var W2 = jcropApi.getBounds()[0]
+            var gx = cropSize['x']/H2
+            var gy = cropSize['y']/W2
+            var gx2 = cropSize['x2']/H2
+            var gy2 = cropSize['y2']/W2
+
+            var cropX = parseInt(gx*H1)
+            var cropY = parseInt(gy*W1)
+            var cropX2 = parseInt(gx2*H1)
+            var cropY2 = parseInt(gy2*W1)
             var cropSizeRadio = {"x":cropX,"y":cropY,"x2":cropX2,"y2":cropY2}
             var formdata = new FormData()
-            // formdata.append('file',file);
-            // formdata.append('size', JSON.stringify(cropSize));
+
             formdata.append('file',file)
             formdata.append('size', JSON.stringify(cropSizeRadio))
-            console.log(formdata)
+
             $.ajax({
                 type:'post',
                 url: './recognition',
