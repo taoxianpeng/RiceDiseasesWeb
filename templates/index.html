@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <title>水稻病害智能识别系统</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- 新 Bootstrap4 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
@@ -189,11 +190,6 @@
             })
         });
 
-        // $("#search-button").click(function(){
-        //     var name = $("#diseaseName").val()
-
-        // });
-
         var file; //读取的图片
         var jcropApi; //Jcrap全局变量
         var imgX; //需要剪裁区域左上角的x坐标
@@ -204,12 +200,11 @@
         function destroyCropImg() {
             if (jcropApi != null) {
                 jcropApi.destroy()
-                jcropApi = null
             }
         }
 
         function showImg(input) {
-
+            destroyCropImg()
             file = input.files[0]
             let reader = new FileReader()
             // 图片读取成功回调函数
@@ -240,7 +235,8 @@
                 cropSize = jcropApi.tellSelect()
                 H2 = jcropApi.getBounds()[1]
                 W2 = jcropApi.getBounds()[0]
-            } else {
+            } 
+            if(jcropApi == null || jcropApi.tellSelect()['h']==0 || jcropApi.tellSelect()['w']==0) {
                 let $img = $("#jcrop-img")[0];
                 H2 = $img.height
                 W2 = $img.width
@@ -271,7 +267,7 @@
                 contentType: false,
                 data: formdata,
                 success: function (res) {
-                    let r = confirm('该图片识别为：'+res+'\n'+'是否查看该病害详细信息？')
+                    let r = confirm('该图片识别为：'+res+'\n\n'+'是否查看该病害详细信息？')
                     if (r == true){
                         // 与后端通信，展示所点击图片的文档pdf
                         window.open("./diseases?name=" + res)
