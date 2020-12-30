@@ -3,6 +3,7 @@ from typing import List
 from flask import Flask,render_template,redirect,sessions
 from flask import request as flask_request
 from io import BytesIO
+import os
 import glob
 import math
 import urllib.parse
@@ -11,6 +12,11 @@ from flask.helpers import url_for
 from werkzeug.exceptions import MethodNotAllowed
 from PIL import Image
 import json
+from recognition.recognitionModal import RecogClass
+
+#加载预测模型
+recog_Modal = RecogClass('./recognition/vgg_save.pt')
+#-----------
 
 UPLOAD_FOLDER = '/uploads'
 ALLOWED_EXTENSIONS = set(['jpg'])
@@ -47,7 +53,10 @@ def index():
 @app.route('/diseases',methods=['GET'])
 def diseases():
     name = urllib.parse.unquote(flask_request.values.get('name'))
-    return render_template('diseases.html',name = name)
+    if os.path.exists("./static/UpFiles/{name}.pdf".format(name=name)):
+        return render_template('diseases.html',name = name)
+    else:
+        return render_template('pdfUnexist.html')
 @app.route('/recognition', methods = ['GET', 'POST'])
 def recognition():
     
@@ -63,9 +72,10 @@ def recognition():
     y2=image_crop_size_dict['y2']
 
     res_image = image.crop((x,y,x2,y2))
-    res_image.show()
+    # res_image.show()
+    item = recog_Modal.get_result_by_PIL(res_image)
 
-    return 'success'
+    return item
 
 if __name__ == '__main__':
     app.run()

@@ -61,10 +61,10 @@
             <div class="row">
                 <div class="col-12">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="输入--病害名称" aria-label="输入病害名称"
-                            aria-describedby="basic-addon2">
+                        <input type="text" class="form-control" placeholder="输入病害名称" aria-label="输入病害名称"
+                            aria-describedby="basic-addon2" id="diseaseName">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary search-button" type="button">
+                            <button class="btn btn-outline-secondary" id="search-button" type="button">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-search" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd"
@@ -171,21 +171,27 @@
     <script>
         $(document).ready(function () {
             $(".card").click(function () {
-                var name = $(this).find('p').text()
+                let name = $(this).find('p').text()
                 console.log(name)
                 // 与后端通信，展示所点击图片的文档pdf
                 window.open("./diseases?name=" + name)
             })
-            $(".search-button").click(function () {
-                var name = $('input').val()
+            $("#search-button").click(function () {
+                let name = $('input').val()
                 console.log(name)
                 if (name != "") {
-
+                    // 与后端通信，展示所点击图片的文档pdf
+                    window.open("./diseases?name=" + name)
                 } else {
                     alert("病害名称不能为空！")
                 }
             })
-        })
+        });
+
+        // $("#search-button").click(function(){
+        //     var name = $("#diseaseName").val()
+
+        // });
 
         var file; //读取的图片
         var jcropApi; //Jcrap全局变量
@@ -197,13 +203,14 @@
         function destroyCropImg() {
             if (jcropApi != null) {
                 jcropApi.destroy()
+                jcropApi = null
             }
         }
 
         function showImg(input) {
 
             file = input.files[0]
-            var reader = new FileReader()
+            let reader = new FileReader()
             // 图片读取成功回调函数
             reader.onload = function (e) {
                 document.getElementById('jcrop-img').src = e.target.result
@@ -211,7 +218,7 @@
             reader.readAsDataURL(file)
         }
         function cropImg() {
-            var name = $('#')
+            // var name = $('#')
             $('#jcrop-img').Jcrop({
                 allowSelect: true,
                 baseClass: 'jcrop'
@@ -224,25 +231,33 @@
         function img_crop_to_python() {
             // var imgX = jcropApi.tellSelect()
             //获取照片实际的大小
-            var image = new Image()
+            let image = new Image()
             image.src = $("#jcrop-img")[0].src;
-            // var n
-            var cropSize = jcropApi.tellSelect()
-            var H1 = image.height
-            var W1 = image.width
-            var H2 = jcropApi.getBounds()[1]
-            var W2 = jcropApi.getBounds()[0]
-            var gx = cropSize['x']/H2
-            var gy = cropSize['y']/W2
-            var gx2 = cropSize['x2']/H2
-            var gy2 = cropSize['y2']/W2
+            let H2,W2,cropSize
 
-            var cropX = parseInt(gx*H1)
-            var cropY = parseInt(gy*W1)
-            var cropX2 = parseInt(gx2*H1)
-            var cropY2 = parseInt(gy2*W1)
-            var cropSizeRadio = {"x":cropX,"y":cropY,"x2":cropX2,"y2":cropY2}
-            var formdata = new FormData()
+            if(jcropApi != null){
+                cropSize = jcropApi.tellSelect()
+                H2 = jcropApi.getBounds()[1]
+                W2 = jcropApi.getBounds()[0]
+            }else{
+                let $img = $("#jcrop-img")[0];
+                H2 = $img.height
+                W2 = $img.width
+                cropSize={"x":0,"y":0,"x2":W2,"y2":H2}
+            }
+            let H1 = image.height
+            let W1 = image.width
+            let gx = cropSize['x']/H2
+            let gy = cropSize['y']/W2
+            let gx2 = cropSize['x2']/H2
+            let gy2 = cropSize['y2']/W2
+
+            let cropX = parseInt(gx*H1)
+            let cropY = parseInt(gy*W1)
+            let cropX2 = parseInt(gx2*H1)
+            let cropY2 = parseInt(gy2*W1)
+            let cropSizeRadio = {"x":cropX,"y":cropY,"x2":cropX2,"y2":cropY2}
+            let formdata = new FormData()
 
             formdata.append('file',file)
             formdata.append('size', JSON.stringify(cropSizeRadio))
@@ -250,12 +265,12 @@
             $.ajax({
                 type:'post',
                 url: './recognition',
-                dataType: "json",
+                // dataType: "",
                 processData: false,
                 contentType: false,
                 data: formdata,
-                success:(res)=> {
-                console.log(111,res)
+                success:function(res){
+                    alert(res)
                 }
             });
         }
