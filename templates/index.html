@@ -136,14 +136,15 @@
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">取消</button>
                                             <button type="button" class="btn btn-primary"
-                                                onclick="img_crop_to_python(this)">识别</button>
+                                                onclick="img_crop_to_python(this)" >识别</button>
+                                            <!-- <button type="button" class="btn btn-primary"
+                                                data-target="#exampleModal">识别</button> -->
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
                             <!-- Modal -->
-
                         </div>
                     </div>
                 </div>
@@ -233,44 +234,48 @@
             //获取照片实际的大小
             let image = new Image()
             image.src = $("#jcrop-img")[0].src;
-            let H2,W2,cropSize
+            let H2, W2, cropSize
 
-            if(jcropApi != null){
+            if (jcropApi != null) {
                 cropSize = jcropApi.tellSelect()
                 H2 = jcropApi.getBounds()[1]
                 W2 = jcropApi.getBounds()[0]
-            }else{
+            } else {
                 let $img = $("#jcrop-img")[0];
                 H2 = $img.height
                 W2 = $img.width
-                cropSize={"x":0,"y":0,"x2":W2,"y2":H2}
+                cropSize = { "x": 0, "y": 0, "x2": W2, "y2": H2 }
             }
             let H1 = image.height
             let W1 = image.width
-            let gx = cropSize['x']/H2
-            let gy = cropSize['y']/W2
-            let gx2 = cropSize['x2']/H2
-            let gy2 = cropSize['y2']/W2
+            let gx = cropSize['x'] / H2
+            let gy = cropSize['y'] / W2
+            let gx2 = cropSize['x2'] / H2
+            let gy2 = cropSize['y2'] / W2
 
-            let cropX = parseInt(gx*H1)
-            let cropY = parseInt(gy*W1)
-            let cropX2 = parseInt(gx2*H1)
-            let cropY2 = parseInt(gy2*W1)
-            let cropSizeRadio = {"x":cropX,"y":cropY,"x2":cropX2,"y2":cropY2}
+            let cropX = parseInt(gx * H1)
+            let cropY = parseInt(gy * W1)
+            let cropX2 = parseInt(gx2 * H1)
+            let cropY2 = parseInt(gy2 * W1)
+            let cropSizeRadio = { "x": cropX, "y": cropY, "x2": cropX2, "y2": cropY2 }
             let formdata = new FormData()
 
-            formdata.append('file',file)
+            formdata.append('file', file)
             formdata.append('size', JSON.stringify(cropSizeRadio))
 
             $.ajax({
-                type:'post',
+                type: 'post',
                 url: './recognition',
                 // dataType: "",
                 processData: false,
                 contentType: false,
                 data: formdata,
-                success:function(res){
-                    alert(res)
+                success: function (res) {
+                    let r = confirm('该图片识别为：'+res+'\n'+'是否查看该病害详细信息？')
+                    if (r == true){
+                        // 与后端通信，展示所点击图片的文档pdf
+                        window.open("./diseases?name=" + res)
+                    }
                 }
             });
         }
